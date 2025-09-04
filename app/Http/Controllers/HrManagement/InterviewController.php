@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\InterviewConfirmationMail;
 use App\Mail\InterviewRejectionMail;
+use App\Mail\EmployeeRegistrationMail;
 use Illuminate\Support\Facades\Log;
 
 class InterviewController extends Controller
@@ -252,7 +253,9 @@ class InterviewController extends Controller
 
             try {
                 if ($newStatus === 'Confirm') {
-                    Mail::to($interview->email)->send(new InterviewConfirmationMail($interview, $hrName));
+                    // Send registration link email
+                    $registrationLink = route('register'); // Adjust this route as needed
+                    Mail::to($interview->email)->send(new EmployeeRegistrationMail($interview, $hrName, $registrationLink));
                 } else {
                     $rejectionType = match ($newStatus) {
                         'Rejection - No open Position' => 'no_position',
