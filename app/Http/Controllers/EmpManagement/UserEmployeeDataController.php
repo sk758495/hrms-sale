@@ -1,47 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\HrManagement\EmployeeManagement;
+namespace App\Http\Controllers\EmpManagement;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
-use Illuminate\Http\Request;
-use App\Models\EmployeeData;
-use App\Models\User;
 use App\Models\Position;
+use App\Models\EmployeeData;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class EmployeeDataController extends Controller
+class UserEmployeeDataController extends Controller
 {
     public function index()
     {
-        $employees = EmployeeData::with(['user', 'department', 'position'])
-            ->where('overall_status', 'approved')
-            ->latest()
-            ->get();
-        return view('hr-management.employee.index', compact('employees'));
-    }
-
-    public function toggleStatus(User $user)
-    {
-        $user->is_active = !$user->is_active;
-        $user->save();
-
-        return redirect()->route('employee-data.index')->with('success', 'Employee status updated successfully.');
+        $employeeData = EmployeeData::where('user_id', Auth::id())->first();
+        return view('emp-management.employee-data.index', compact('employeeData'));
     }
 
     public function create()
     {
-        $users = User::whereDoesntHave('employeeData')->get();
         $departments = Department::all();
         $positions = Position::all();
-
-        return view('hr-management.employee.create', compact('users', 'departments', 'positions'));
+        return view('emp-management.employee-data.create', compact('departments', 'positions'));
     }
 
     public function store(Request $request)
     {
-        // Validate input
         $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'department_id' => 'required|exists:departments,id',
             'position_id' => 'nullable|exists:positions,id',
             'current_address' => 'required|string',
@@ -54,13 +39,10 @@ class EmployeeDataController extends Controller
             'driving_license_doc' => 'nullable|file',
             'voter_id' => 'nullable|string',
             'voter_id_doc' => 'nullable|file',
-            'ctc' => 'nullable|string',
             'bank_ifsc' => 'nullable|string',
             'bank_account' => 'nullable|string',
             'bank_name' => 'nullable|string',
             'experience_type' => 'required|in:fresher,experience',
-
-            // File fields
             'passport_photo' => 'nullable|file',
             'passbook_image' => 'nullable|file',
             'resume' => 'nullable|file',
@@ -71,20 +53,12 @@ class EmployeeDataController extends Controller
             'form_16' => 'nullable|file',
         ]);
 
-        // Process file uploads
+        $data['user_id'] = Auth::id();
+
         $fileFields = [
-            'passport_photo',
-            'aadhar_doc',
-            'pan_doc',
-            'driving_license_doc',
-            'voter_id_doc',
-            'passbook_image',
-            'resume',
-            'prev_offer_letter',
-            'prev_appointment_letter',
-            'prev_salary_slips',
-            'prev_relieving_letter',
-            'form_16',
+            'passport_photo', 'aadhar_doc', 'pan_doc', 'driving_license_doc',
+            'voter_id_doc', 'passbook_image', 'resume', 'prev_offer_letter',
+            'prev_appointment_letter', 'prev_salary_slips', 'prev_relieving_letter', 'form_16'
         ];
 
         foreach ($fileFields as $field) {
@@ -93,44 +67,41 @@ class EmployeeDataController extends Controller
             }
         }
 
-        // Create new employee data record
         EmployeeData::create($data);
 
-        return redirect()->back()->with('success', 'Employee data submitted successfully!');
+        return redirect()->route('user.employee-data.index')->with('success', 'Employee data submitted successfully!');
     }
 
-
-    public function edit(EmployeeData $employee)
+    public function edit()
     {
-        $users = User::all();
+        $employeeData = EmployeeData::where('user_id', Auth::id())->firstOrFail();
         $departments = Department::all();
         $positions = Position::all();
-        return view('hr-management.employee.edit', compact('employee', 'users', 'departments', 'positions'));
+        return view('emp-management.employee-data.edit', compact('employeeData', 'departments', 'positions'));
     }
 
-    public function update(Request $request, EmployeeData $employee)
+    public function update(Request $request)
     {
+        $employeeData = EmployeeData::where('user_id', Auth::id())->firstOrFail();
+
         $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'department_id' => 'required|exists:departments,id',
             'position_id' => 'nullable|exists:positions,id',
             'current_address' => 'required|string',
             'extra_mobile' => 'nullable|string',
             'aadhar_number' => 'nullable|string',
+            'aadhar_doc' => 'nullable|file',
             'pan_number' => 'nullable|string',
+            'pan_doc' => 'nullable|file',
             'driving_license' => 'nullable|string',
+            'driving_license_doc' => 'nullable|file',
             'voter_id' => 'nullable|string',
-            'ctc' => 'nullable|string',
+            'voter_id_doc' => 'nullable|file',
             'bank_ifsc' => 'nullable|string',
             'bank_account' => 'nullable|string',
             'bank_name' => 'nullable|string',
             'experience_type' => 'required|in:fresher,experience',
-            // file fields
             'passport_photo' => 'nullable|file',
-            'aadhar_doc' => 'nullable|file',
-            'pan_doc' => 'nullable|file',
-            'driving_license_doc' => 'nullable|file',
-            'voter_id_doc' => 'nullable|file',
             'passbook_image' => 'nullable|file',
             'resume' => 'nullable|file',
             'prev_offer_letter' => 'nullable|file',
@@ -140,20 +111,10 @@ class EmployeeDataController extends Controller
             'form_16' => 'nullable|file',
         ]);
 
-        // Process file uploads
         $fileFields = [
-            'passport_photo',
-            'aadhar_doc',
-            'pan_doc',
-            'driving_license_doc',
-            'voter_id_doc',
-            'passbook_image',
-            'resume',
-            'prev_offer_letter',
-            'prev_appointment_letter',
-            'prev_salary_slips',
-            'prev_relieving_letter',
-            'form_16',
+            'passport_photo', 'aadhar_doc', 'pan_doc', 'driving_license_doc',
+            'voter_id_doc', 'passbook_image', 'resume', 'prev_offer_letter',
+            'prev_appointment_letter', 'prev_salary_slips', 'prev_relieving_letter', 'form_16'
         ];
 
         foreach ($fileFields as $field) {
@@ -162,14 +123,37 @@ class EmployeeDataController extends Controller
             }
         }
 
-        $employee->update($data);
+        $employeeData->update($data);
 
-        return redirect()->route('employee-data.index')->with('success', 'Employee data updated successfully!');
+        return redirect()->route('user.employee-data.index')->with('success', 'Employee data updated successfully!');
     }
 
-    public function destroy(EmployeeData $employee)
+    public function getPositions($department_id)
     {
-        $employee->delete();
-        return redirect()->route('employee-data.index')->with('success', 'Employee data deleted successfully.');
+        $positions = Position::where('department_id', $department_id)->get();
+        return response()->json($positions);
+    }
+
+    public function reuploadDocument(Request $request)
+    {
+        $employeeData = EmployeeData::where('user_id', Auth::id())->firstOrFail();
+        
+        $request->validate([
+            'document_type' => 'required|string',
+            'document' => 'required|file'
+        ]);
+
+        $documentType = $request->document_type;
+        $filePath = $request->file('document')->store('uploads/employee', 'public');
+        
+        $updateData = [
+            $documentType => $filePath,
+            $documentType . '_status' => 'pending',
+            $documentType . '_remarks' => null
+        ];
+
+        $employeeData->update($updateData);
+
+        return redirect()->route('user.employee-data.index')->with('success', 'Document re-uploaded successfully!');
     }
 }

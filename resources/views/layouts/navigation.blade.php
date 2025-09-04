@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('emp.documents.index')" :active="request()->routeIs('emp.documents.*')">
                         {{ __('My Documents') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('user.employee-data.index')" :active="request()->routeIs('user.employee-data.*')">
+                        {{ __('My Employee Data') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -71,6 +74,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('emp.documents.index')" :active="request()->routeIs('emp.documents.*')">
                 {{ __('My Documents') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('user.employee-data.index')" :active="request()->routeIs('user.employee-data.*')">
+                {{ __('My Employee Data') }}
             </x-responsive-nav-link>
         </div>
 

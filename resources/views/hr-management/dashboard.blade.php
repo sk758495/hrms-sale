@@ -160,6 +160,13 @@
                     <small class="d-block text-muted">Track employee attendance</small>
                 </a>
             </div>
+            <div class="col-lg-4 col-md-6 mb-3">
+                <a href="{{ route('hr.document-verification.index') }}" class="action-btn dashboard-card">
+                    <i class="bi bi-clock"></i>
+                    <strong>Document Verification</strong>
+                    <small class="d-block text-muted">Track employee Document Verification</small>
+                </a>
+            </div>
         </div>
     </div>
 </div>

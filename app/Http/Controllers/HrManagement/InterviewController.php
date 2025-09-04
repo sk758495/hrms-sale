@@ -254,7 +254,7 @@ class InterviewController extends Controller
             try {
                 if ($newStatus === 'Confirm') {
                     // Send registration link email
-                    $registrationLink = route('register'); // Adjust this route as needed
+                    $registrationLink = route('user.employee-data.create');
                     Mail::to($interview->email)->send(new EmployeeRegistrationMail($interview, $hrName, $registrationLink));
                 } else {
                     $rejectionType = match ($newStatus) {

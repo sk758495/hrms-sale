@@ -206,6 +206,12 @@
                     </li>
                     
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('hr.document-verification.*') ? 'active' : '' }}" href="{{ route('hr.document-verification.index') }}">
+                            <i class="bi bi-file-check"></i> Document Verification
+                        </a>
+                    </li>
+                    
+                    {{-- <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('hr.attendance.*') ? 'active' : '' }}" href="{{ route('hr.attendance.index') }}">
                             <i class="bi bi-clock"></i> Attendance
                         </a>
@@ -221,7 +227,7 @@
                             <li><a class="dropdown-item" href="{{ route('ndas.index') }}"><i class="bi bi-shield-lock"></i> NDAs</a></li>
                             <li><a class="dropdown-item" href="{{ route('salary-slips.index') }}"><i class="bi bi-receipt"></i> Salary Slips</a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                 </ul>
                 
                 <div class="navbar-nav">

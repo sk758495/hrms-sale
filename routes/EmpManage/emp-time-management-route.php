@@ -6,7 +6,7 @@ use App\Http\Controllers\EmpManagement\ReportController;
 use App\Http\Controllers\EmpManagement\SessionController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'App\Http\Middleware\CheckUserActive'])->prefix('emp-management')->group(function () {
+Route::middleware(['auth', 'App\Http\Middleware\EnsureEmailIsVerified', 'App\Http\Middleware\CheckUserActive', 'check.employee.data'])->prefix('emp-management')->group(function () {
     
     // Time Tracker UI
     Route::get('/time-tracker', [TimerController::class, 'index'])->name('emp.time-tracker');

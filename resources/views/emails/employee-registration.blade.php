@@ -20,3 +20,4 @@ Best regards,
 {{ $hrName }}
 HR Department
 Jashma InfoSoft Pvt. Ltd.
+
